@@ -16,7 +16,6 @@
         .title-area { flex: 1; text-align: center; padding-top: 5px; }
         .main-title-text { white-space: nowrap; font-weight: 900; display: inline-block; font-style: normal !important; letter-spacing: -0.02em; }
         
-        /* ✨ 화려한 버튼 및 맥박 애니메이션 */
         @keyframes pulse-glow {
             0% { box-shadow: 0 0 0 0 rgba(192, 132, 252, 0.7); transform: scale(1); }
             70% { box-shadow: 0 0 0 10px rgba(192, 132, 252, 0); transform: scale(1.05); }
@@ -31,7 +30,6 @@
         .clock-label { font-size: 9px; font-weight: 900; color: #6366f1; }
         .clock-time { font-size: 12px; font-weight: 700; color: #60a5fa; font-family: 'monospace'; }
 
-        /* 💰 리버 계산기 위젯 복구 */
         .asset-widget { background: rgba(30, 41, 59, 0.95); border: 1px solid rgba(99, 102, 241, 0.4); border-radius: 14px; padding: 8px 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
         .tab-active { background: #4f46e5 !important; color: white !important; font-weight: 900; }
         
@@ -127,7 +125,7 @@
         <div id="pagination" class="flex justify-center gap-2 pt-2"></div>
 
         <div id="adminStatsPanel">
-            <h3 class="text-indigo-400 font-black mb-2 text-sm">🏆 SECRET MASTER STATS</h3>
+            <h3 class="text-indigo-400 font-black mb-2 text-sm">🏆 SECRET MASTER STATS (Unique IPs)</h3>
             <div id="statText" class="text-xs text-slate-300 font-mono">Loading...</div>
         </div>
     </div>
@@ -142,46 +140,49 @@
         const itemsPerPage = 10, timeZones = { KR: 'Asia/Seoul', US: 'America/New_York', CN: 'Asia/Shanghai', JP: 'Asia/Tokyo', VN: 'Asia/Ho_Chi_Minh', TR: 'Europe/Istanbul' };
         let livePtsPrice = 0, usdtKrwRate = 1485;
 
-        // 🌐 번역 사전 (전부 누락 없이 보강)
         const translations = {
-            ko: { 
-                title: "River 글로벌 상호 교류 활성화", connect: "접속", logBtn: "기록", mypts: "나의 PTS", ptsprice: "PTS PRICE", value: "KRW VALUE", xName: "X 닉네임", xId: "X 아이디 (@아이디)", addBtn: "추가", devBtn: "개발자:김지호bwd", riverBtn: "River란?", logPlace: "수량",
-                guide: "<strong>💡 안내:</strong><br>1. 원하는 제목을 정하고 **접속**을 눌러주세요 (비밀번호 필요).<br>2. **이름을 클릭**하면 연결된 X 계정으로 바로 이동합니다.<br>3. 🔼/🔽 화살표로 명단 순위를 **한 칸씩** 조정할 수 있습니다." 
-            },
-            en: { 
-                title: "River Global Exchange Activation", connect: "Connect", logBtn: "Add", mypts: "MY PTS", ptsprice: "PTS PRICE", value: "KRW VALUE", xName: "X Nickname", xId: "X ID (@username)", addBtn: "Add", devBtn: "Dev: Jiho Kim bwd", riverBtn: "What is River?", logPlace: "Qty",
-                guide: "<strong>💡 Info:</strong><br>1. Choose a title and press **Connect** (Password required).<br>2. **Click the name** to visit their X profile immediately.<br>3. Use 🔼/🔽 to adjust the rank **one step at a time**." 
-            },
-            zh: { 
-                title: "River 全球相互交流激活", connect: "连接", logBtn: "记录", mypts: "我的 PTS", ptsprice: "PTS 价格", value: "KRW 价值", xName: "X 昵称", xId: "X ID (@账号)", addBtn: "添加", devBtn: "开发者: 金智浩bwd", riverBtn: "什么是 River?", logPlace: "数量",
-                guide: "<strong>💡 指南:</strong><br>1. 选择一个标题并点击**连接** (需要密码)。<br>2. **点击名字** 立即访问其 X 个人资料。<br>3. 使用 🔼/🔽 **逐级** 调整排名。" 
-            },
-            tr: { 
-                title: "River Küresel Değişim Aktivasyonu", connect: "Bağlan", logBtn: "Ekle", mypts: "PTS'LERİM", ptsprice: "PTS FİYATI", value: "KRW DEĞERİ", xName: "X Takma Adı", xId: "X Kimliği (@kullanıcı)", addBtn: "Ekle", devBtn: "Geliştirici: Jiho Kim bwd", riverBtn: "River nedir?", logPlace: "Adet",
-                guide: "<strong>💡 Bilgi:</strong><br>1. İstediğiniz başlığı girin ve **Bağlan**'a basın (Şifre gereklidir).<br>2. X profilini ziyaret etmek için **isme tıklayın**.<br>3. Sıralamayı **tek tek** ayarlamak için 🔼/🔽 kullanın." 
-            },
-            ja: { 
-                title: "River グローバル相互交流の活性化", connect: "接続", logBtn: "登録", mypts: "マイ PTS", ptsprice: "PTS 価格", value: "KRW 価値", xName: "X 닉네임", xId: "X ID (@아이디)", addBtn: "追加", devBtn: "開発者: キム・ジホbwd", riverBtn: "Riverとは？", logPlace: "数量",
-                guide: "<strong>💡 案内:</strong><br>1. タイトルを決めて **接続** を押してください (パスワードが必要).<br>2. **名前をクリック** すると X アカウントに移動します.<br>3. 🔼/🔽 で順位を **一つずつ** 調整できます." 
-            },
-            vi: { 
-                title: "Kích hoạt trao đổi toàn cầu River", connect: "Kết nối", logBtn: "Gửi", mypts: "PTS CỦA TÔI", ptsprice: "GIÁ PTS", value: "GIÁ TRỊ KRW", xName: "Biệt danh X", xId: "ID X (@username)", addBtn: "Thêm", devBtn: "Phát triển: Jiho Kim bwd", riverBtn: "River là gì?", logPlace: "Số lượng",
-                guide: "<strong>💡 HD:</strong><br>1. Chọn tiêu đề và nhấn **Kết nối** (Cần mật khẩu).<br>2. **Nhấn tên** để truy cập X ngay lập tức.<br>3. Dùng 🔼/🔽 để chỉnh thứ hạng **từng bước**." 
-            }
+            ko: { title: "River 글로벌 상호 교류 활성화", connect: "접속", logBtn: "기록", mypts: "나의 PTS", ptsprice: "PTS PRICE", value: "KRW VALUE", xName: "X 닉네임", xId: "X 아이디 (@아이디)", addBtn: "추가", devBtn: "개발자:김지호bwd", riverBtn: "River란?", logPlace: "수량", guide: "<strong>💡 안내:</strong><br>1. 원하는 제목을 정하고 **접속**을 눌러주세요 (비밀번호 필요).<br>2. **이름을 클릭**하면 연결된 X 계정으로 바로 이동합니다.<br>3. 🔼/🔽 화살표로 명단 순위를 **한 칸씩** 조정할 수 있습니다." },
+            en: { title: "River Global Exchange Activation", connect: "Connect", logBtn: "Add", mypts: "MY PTS", ptsprice: "PTS PRICE", value: "KRW VALUE", xName: "X Nickname", xId: "X ID (@username)", addBtn: "Add", devBtn: "Dev: Jiho Kim bwd", riverBtn: "What is River?", logPlace: "Qty", guide: "<strong>💡 Info:</strong><br>1. Choose a title and press **Connect** (Password required).<br>2. **Click the name** to visit their X profile immediately.<br>3. Use 🔼/🔽 to adjust the rank **one step at a time**." },
+            zh: { title: "River 全球相互交流激活", connect: "连接", logBtn: "记录", mypts: "我的 PTS", ptsprice: "PTS 价格", value: "KRW 价值", xName: "X 昵称", xId: "X ID (@账号)", addBtn: "添加", devBtn: "开发者: 金智浩bwd", riverBtn: "什么是 River?", logPlace: "数量", guide: "<strong>💡 指南:</strong><br>1. 选择一个标题并点击**连接** (需要密码)。<br>2. **点击名字** 立即访问其 X 个人资料。<br>3. 使用 🔼/🔽 **逐级** 调整排名。" },
+            tr: { title: "River Küresel Değişim Aktivasyonu", connect: "Bağlan", logBtn: "Ekle", mypts: "PTS'LERİM", ptsprice: "PTS FİYATI", value: "KRW DEĞERİ", xName: "X Takma Adı", xId: "X Kimliği (@kullanıcı)", addBtn: "Ekle", devBtn: "Geliştirici: Jiho Kim bwd", riverBtn: "River nedir?", logPlace: "Adet", guide: "<strong>💡 Bilgi:</strong><br>1. İstediğiniz başlığı girin ve **Bağlan**'a basın (Şifre gereklidir).<br>2. X profilini ziyaret etmek için **isme tıklayın**.<br>3. Sıralamayı **tek tek** ayarlamak için 🔼/🔽 kullanın." },
+            ja: { title: "River グローバル相互交流の活性化", connect: "接続", logBtn: "登録", mypts: "マイ PTS", ptsprice: "PTS 価格", value: "KRW 価値", xName: "X 닉네임", xId: "X ID (@아이디)", addBtn: "追加", devBtn: "開発者: キム・ジホbwd", riverBtn: "Riverとは？", logPlace: "数量", guide: "<strong>💡 案内:</strong><br>1. タイ틀을 정하고 **접속**을 눌러주세요 (비밀번호 필요).<br>2. **이름을 클릭**하면 X 계정으로 이동합니다.<br>3. 🔼/🔽로 순위를 **하나씩** 조정하세요." },
+            vi: { title: "Kích hoạt trao đổi toàn cầu River", connect: "Kết nối", logBtn: "Gửi", mypts: "PTS CỦA TÔI", ptsprice: "GIÁ PTS", value: "GIÁ TRỊ KRW", xName: "Biệt danh X", xId: "ID X (@username)", addBtn: "Thêm", devBtn: "Phát triển: Jiho Kim bwd", riverBtn: "River là gì?", logPlace: "Số lượng", guide: "<strong>💡 HD:</strong><br>1. Chọn tiêu đề và nhấn **Kết nối** (Cần mật khẩu).<br>2. **Nhấn tên** để truy cập X ngay lập tức.<br>3. Dùng 🔼/🔽 để chỉnh thứ hạng **từng bước**." }
         };
 
+        // 🛡️ IP 기반 중복 방지 트래킹 로직
         async function trackAndGo(type, url) {
             const mId = document.getElementById('managerId').value || 'anonymous';
-            await supabaseClient.from('river_clicks').insert([{ manager_id: mId, btn_type: type }]);
+            try {
+                // 1. 현재 사용자의 IP 주소 가져오기
+                const ipRes = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipRes.json();
+                const userIp = ipData.ip;
+
+                // 2. 이 IP가 이 버튼(type)을 누른 적이 있는지 확인
+                const { data: existing } = await supabaseClient
+                    .from('river_clicks')
+                    .select('*')
+                    .eq('ip_address', userIp)
+                    .eq('btn_type', type)
+                    .limit(1);
+
+                // 3. 기록이 없다면 새롭게 저장 (중복 방지)
+                if (!existing || existing.length === 0) {
+                    await supabaseClient.from('river_clicks').insert([
+                        { manager_id: mId, btn_type: type, ip_address: userIp }
+                    ]);
+                }
+            } catch (e) { console.error("Tracking Error:", e); }
             window.open(url, '_blank');
         }
 
         async function showAdminStats() {
+            // DB에 저장된 고유 IP 데이터만 가져와서 출력
             const { data } = await supabaseClient.from('river_clicks').select('*');
             if(data) {
                 const dev = data.filter(c => c.btn_type === 'Developer').length;
                 const ref = data.filter(c => c.btn_type === 'RiverRef').length;
-                document.getElementById('statText').innerHTML = `Dev: ${dev} | RiverRef: ${ref} | Total: ${data.length}`;
+                document.getElementById('statText').innerHTML = `Unique Dev: ${dev} | Unique RiverRef: ${ref} | Total Visitors: ${data.length}`;
             }
         }
 
@@ -196,7 +197,7 @@
                 localStorage.setItem('river_manager_id', mId);
                 document.getElementById('adminStatsPanel').style.display = 'none';
                 fetchUsers(); fetchDailyLogs();
-            } else { alert("Wrong Password!"); }
+            } else { alert("X"); }
         }
 
         async function updateMarketData() {
@@ -308,7 +309,6 @@
             }
         }
 
-        // 🌐 번역 변경 함수 보강: 모든 요소 타겟팅
         function changeLanguage(lang) {
             currentLang = lang; const t = translations[lang] || translations.ko;
             document.getElementById('main-title').innerText = t.title;
